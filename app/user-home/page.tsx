@@ -1,4 +1,3 @@
-// app/smart-fridge-dashboard.tsx
 "use client";
 
 import * as React from "react";
@@ -7,19 +6,15 @@ import Image from "next/image";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/modetoggle";
-import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import axios from "axios";
 import logo from "/public/logo.svg";
-<<<<<<< HEAD
 const GEMINI_KEY = process.env.NEXT_PUBLIC_GEMINI_KEY;
 const SPOON_KEY = process.env.NEXT_PUBLIC_SPOON_KEY;
-=======
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -78,7 +73,7 @@ interface RecipeDetails {
   instructions: string;
 }
 
-export default function SmartFridgeDashboard() {
+export default function Component() {
   const { user } = useUser();
   const [foodItems, setFoodItems] = React.useState<FoodItem[]>([]);
   const [schedule, setSchedule] = React.useState<ScheduleItem[]>([]);
@@ -93,11 +88,7 @@ export default function SmartFridgeDashboard() {
   const [availableTime, setAvailableTime] = React.useState("");
   const [suggestedRecipe, setSuggestedRecipe] = React.useState("");
 
-<<<<<<< HEAD
   const dayOrder = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-=======
-  const dayOrder = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
 
   React.useEffect(() => {
     const aiResponsesRef = ref(database, "ai_responses");
@@ -113,7 +104,6 @@ export default function SmartFridgeDashboard() {
               id: key,
               ...latestData[key],
               }))
-            // : [{ id: "0", name: "No food Available", quantity: 0, calorie: 0 }];
             : [{ id: "1", name: "Chicken", quantity: 1, calorie: 1000 }];
           setFoodItems(foodItemsWithIds);
         }
@@ -133,20 +123,6 @@ export default function SmartFridgeDashboard() {
     });
   }, []);
 
-  const handleFoodDelete = async (name: string) => {
-    try {
-      const foodItemRef = ref(database, `ai_responses/foodItems`);
-      onValue(foodItemRef, (snapshot) => {
-        const items = snapshot.val();
-        const updatedItems = items ? items.filter((item: FoodItem) => item.name !== name) : [];
-        set(foodItemRef, updatedItems);
-      });
-      setFoodItems((prevItems) => prevItems.filter((item) => item.name !== name));
-    } catch (error) {
-      console.error("Error deleting food item:", error);
-    }
-  };
-
   const handleAddClass = async () => {
     const newClassRef = push(ref(database, "schedule"));
     await set(newClassRef, { className, day, startTime, endTime });
@@ -161,21 +137,16 @@ export default function SmartFridgeDashboard() {
   };
 
   const fetchRecipes = async () => {
-<<<<<<< HEAD
     const apiKey = SPOON_KEY;
-=======
-    const apiKey = '49ced12e95f64e30a325e3d257ab010e';
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
     const ingredients = foodItems.map((item) => item.name).join(',');
     try {
       const response = await axios.get(`https://api.spoonacular.com/recipes/findByIngredients`, {
         params: { ingredients, apiKey, number: 5, ranking: 2, ignorePantry: true },
       });
-      const recipeData: Recipe[] = response.data.map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        image: item.image,
-      }));
+      const recipeData: Recipe[] = response.data.map((item: unknown) => {
+        const { id, title, image } = item as { id: number; title: string; image: string };
+         return { id, title, image };
+        });
       setRecipes(recipeData);
     } catch (error) {
       console.error("Error fetching recipes:", error);
@@ -183,11 +154,7 @@ export default function SmartFridgeDashboard() {
   };
 
   const handleViewRecipe = async (recipeId: number) => {
-<<<<<<< HEAD
     const apiKey = SPOON_KEY;
-=======
-    const apiKey = '6311ae6ba06349b9b24ebc42b19fb517';
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
     try {
       const response = await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/information`, {
         params: { includeNutrition: false, apiKey },
@@ -199,14 +166,10 @@ export default function SmartFridgeDashboard() {
         image: data.image,
         instructions: data.instructions,
       });
-<<<<<<< HEAD
       if (!GEMINI_KEY) {
         throw new Error("GEMINI_KEY is not defined");
       }
       const genAI = new GoogleGenerativeAI(GEMINI_KEY);
-=======
-      const genAI = new GoogleGenerativeAI('AIzaSyBCag4JyNXDZDsZhUdltv-ftc-0Jfcy7GM');
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const parsedInstructions = await model.generateContent(
         `Please itemize the following instructions using proper step numbers and also proper html tag so that it align nicely 
@@ -227,14 +190,10 @@ export default function SmartFridgeDashboard() {
   };
 
   const handlePrepareRecipe = async () => {
-<<<<<<< HEAD
     if (!GEMINI_KEY) {
         throw new Error("GEMINI_KEY is not defined");
       }
     const genAI = new GoogleGenerativeAI(GEMINI_KEY);
-=======
-    const genAI = new GoogleGenerativeAI('AIzaSyBCag4JyNXDZDsZhUdltv-ftc-0Jfcy7GM');
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     try {
       const response = await model.generateContent(
@@ -250,9 +209,9 @@ export default function SmartFridgeDashboard() {
   return (
     <div className="flex min-h-screen flex-col bg-white dark:bg-black text-black dark:text-white">
       <header className="sticky top-0 z-50 w-full border-b bg-gray-100 dark:bg-gray-900 shadow-sm">
-        <div className="container flex h-10 items-center justify-between px-4">
+        <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center space-x-4">
-            <Image src={logo} alt="Company Logo" width={150} height={150} />
+            <Image src={logo} alt="Company Logo" width={100} height={100} />
           </div>
           <div className="flex items-center space-x-4">
             <ModeToggle />
@@ -262,14 +221,14 @@ export default function SmartFridgeDashboard() {
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-gray-100 dark:bg-gray-900 text-black dark:text-white">
+              <DropdownMenuContent align="end" className="w-56 bg-gray-100 dark:bg-gray-900 text-black dark:text-white">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {user ? (
                   <>
                     <DropdownMenuItem>
                       <a href="/user-info" className="flex items-center space-x-2">
-                        <img src={user.picture ?? ''} alt={user.name ?? 'User'} className="h-6 w-6 rounded-full" />
+                        <Image src={user.picture ?? ''} alt={user.name ?? 'User'} width={24} height={24} className="rounded-full" />
                         <span>{user.name}</span>
                       </a>
                     </DropdownMenuItem>
@@ -293,350 +252,244 @@ export default function SmartFridgeDashboard() {
           </div>
         </div>
       </header>
-      <main className="flex-1 container py-8 px-4 space-y-6">
-        <Tabs defaultValue="dashboard">
-            <TabsList className="grid w-full grid-cols-3 h-12">
-            <TabsTrigger value="dashboard" className="text-gray-700 dark:text-gray-300 text-lg">Dashboard</TabsTrigger>
-            <TabsTrigger value="recipes" className="text-gray-700 dark:text-gray-300 text-lg">Recipes</TabsTrigger>
-            <TabsTrigger value="schedules" className="text-gray-700 dark:text-gray-300 text-lg">Schedules</TabsTrigger>
-            </TabsList>
-          <TabsContent value="dashboard" className="space-y-6">
-            <div className="flex items-center justify-between p-4">
-              <h2 className="text-2xl font-bold text-black dark:text-white">Food Detection Dashboard</h2>
-              <Button variant="outline" size="icon" className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
-              <RefreshCw className="h-5 w-5" />
-              </Button>
-            </div>
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-<<<<<<< HEAD
-                <th scope="col" className="px-6 py-3 text-left text-xs  font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Item Number</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs  font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Item Name</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs  font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs  font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Calories</th>
-=======
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Item Number</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Item Name</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Calories</th>
-                <th scope="col" className="relative px-6 py-3">
-                <span className="sr-only">Delete</span>
-                </th>
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
-              </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-              {foodItems.map((item, index) => (
-                <tr key={index}>
-<<<<<<< HEAD
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{index + 1}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{item.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{item.quantity}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{item.calorie}</td>
-=======
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{index + 1}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{item.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{item.quantity}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{item.calorie}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <Button onClick={() => handleFoodDelete(item.name)} variant="destructive" className="text-gray-600 dark:text-gray-400">Delete</Button>
-                </td>
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
-                </tr>
-              ))}
-              </tbody>
-            </table>
+      <main className="flex-1 container py-8 px-4 space-y-6 mx-auto max-w-7xl">
+        <Tabs defaultValue="dashboard" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-3 h-12">
+        <TabsTrigger value="dashboard" className="text-gray-700 dark:text-gray-300 text-sm sm:text-base">Dashboard</TabsTrigger>
+        <TabsTrigger value="recipes" className="text-gray-700 dark:text-gray-300 text-sm sm:text-base">Recipes</TabsTrigger>
+        <TabsTrigger value="schedules" className="text-gray-700 dark:text-gray-300 text-sm sm:text-base">Schedules</TabsTrigger>
+          </TabsList>
+          <TabsContent value="dashboard" className="space-y-6 px-0">
+        <div className="flex items-center justify-between p-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-black dark:text-white">Food Detection Dashboard</h2>
+          <Button variant="outline" size="icon" className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
+            <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5" />
+          </Button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-800">
+          <tr>
+            <th scope="col" className="px-3 py-3 text-left text-xs font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">No.</th>
+            <th scope="col" className="px-3 py-3 text-left text-xs font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Name</th>
+            <th scope="col" className="px-3 py-3 text-left text-xs font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Qty</th>
+            <th scope="col" className="px-3 py-3 text-left text-xs font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Cal</th>
+          </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+          {foodItems.map((item, index) => (
+            <tr key={index}>
+              <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{index + 1}</td>
+              <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{item.name}</td>
+              <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{item.quantity}</td>
+              <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{item.calorie}</td>
+            </tr>
+          ))}
+            </tbody>
+          </table>
+        </div>
           </TabsContent>
-            <TabsContent value="schedules" className="space-y-6 pt-8">
-            <Card className="bg-gray-100 dark:bg-gray-800 mx-auto" style={{ maxWidth: "75%" }}>
-              <CardHeader>
-              <CardTitle className="text-black dark:text-white">Schedules</CardTitle>
-<<<<<<< HEAD
-              <CardDescription className="text-gray-600 dark:text-gray-400">Edit Your Schedules</CardDescription>
-                </CardHeader>
-                <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-center space-x-4 mb-4">
-                    {dayOrder.map((d) => (
-                        <Button
-                        key={d}
-                        variant={day === d ? "default" : "outline"}
-                        onClick={() => setDay(d)}
-                        className={`text-gray-700 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-500 ${day === d ? "bg-gray-300 dark:bg-gray-700" : ""}`}
-                        >
-                        {d}
-                        </Button>
-                    ))}
-                  </div>
-                  <div className="grid gap-4">
-                    {schedule
-                      .filter((class_) => class_.day === day)
-                      .map((class_) => (
-                        <div
-                          key={class_.id}
-                          className="flex items-center justify-between rounded-lg border border-gray-300 dark:border-gray-700 p-4"
-                        >
-                          <div className="flex-1 text-left">
-                            <div className="font-semibold text-black dark:text-white">
-                              {class_.className}
-                            </div>
-                          </div>
-                          <div className="flex-1 text-left">
-                            <div className="text-gray-600 dark:text-gray-400">{class_.day}</div>
-                          </div>
-                          <div className="flex-1 text-left">
-                            <div className="text-gray-600 dark:text-gray-400">
-                              {class_.startTime} - {class_.endTime}
-                            </div>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDeleteClass(class_.id)}
-                            className="text-gray-600 dark:text-gray-400"
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                  </div>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <div className="flex justify-between space-x-4">
-                        <Button variant="outline" className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
-                          <Plus className="mr-2 h-4 w-4" /> Add Class
-                        </Button>
-                      </div>
-                    </DialogTrigger>
-                    <Button variant="outline" onClick={() => setIsRecipeDialogOpen(true)} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
-                      Check the Food Recipe Here
-                    </Button>
-=======
-              <CardDescription className="text-gray-600 dark:text-gray-400">Manage your class schedule</CardDescription>
-                </CardHeader>
-                <CardContent>
-                <div className="space-y-4">
-                
-              <div className="flex justify-center space-x-4 mb-4">
-                {dayOrder.map((d) => (
-                  <Button
-                    key={d}
-                    variant={day === d ? "default" : "outline"}
-                    onClick={() => setDay(d)}
-                    className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-                  >
-                    {d}
-                  </Button>
-                ))}
-              </div>
-              <div className="grid gap-4">
-                {schedule
-                  .filter((class_) => class_.day === day)
-                  .map((class_) => (
-                    <div
-                      key={class_.id}
-                      className="flex items-center justify-between rounded-lg border border-gray-300 dark:border-gray-700 p-4"
-                    >
-                      <div className="flex-1 text-left">
-                        <div className="font-semibold text-black dark:text-white">
-                          {class_.className}
-                        </div>
-                      </div>
-                      <div className="flex-1 text-left">
-                        <div className="text-gray-600 dark:text-gray-400">{class_.day}</div>
-                      </div>
-                      <div className="flex-1 text-left">
-                        <div className="text-gray-600 dark:text-gray-400">
-                          {class_.startTime} - {class_.endTime}
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteClass(class_.id)}
-                        className="text-gray-600 dark:text-gray-400"
-                      >
-                        <Trash className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-              </div>
-                {schedule.map((class_, index) => {
-                const nextClass = schedule[index + 1];
-                if (nextClass) {
-                  const endTime = new Date(`1970-01-01T${class_.endTime}`).getTime();
-                  const startTime = new Date(`1970-01-01T${nextClass.startTime}`).getTime();
-                  const timeGap = (startTime - endTime) / 60000; // time gap in minutes
-                  const hoursGap = timeGap / 60;
-                  const foodsuggested = 0;
-                  if (timeGap > 15 && foodsuggested < 3) {
-                  
+          <TabsContent value="schedules" className="space-y-6 pt-8">
+        <Card className="bg-gray-100 dark:bg-gray-800 mx-auto w-full lg:w-3/4">
+          <CardHeader>
+            <CardTitle className="text-black dark:text-white">Schedules</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400">Edit Your Schedules</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            {dayOrder.map((d) => (
+              <Button
+            key={d}
+            variant={day === d ? "default" : "outline"}
+            onClick={() => setDay(d)}
+            className={`text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-500 ${day === d ? "bg-gray-300 dark:bg-gray-700" : ""}`}
+              >
+            {d.slice(0, 3)}
+              </Button>
+            ))}
+          </div>
+          <Button
+                variant="outline"
+                onClick={async () => {
                   const genAI = new GoogleGenerativeAI('AIzaSyBCag4JyNXDZDsZhUdltv-ftc-0Jfcy7GM');
                   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                    fetchRecipes();
-                    const recipeList = recipes.map(recipe => recipe.title).join(', ');
-                    model.generateContent(
-                    ` Along this receipt list ${recipeList}.
-                     which once can be make under the time ${timeGap}, 
-                     this is the time gap in between my two events in my schedule, 
-                     among thoses list which one would be the best. just give me the name, nothing else don't generate any any information., `
-                    ).then(response => {
-                    const suggestedRecipe = response.response.text();
-                    if (suggestedRecipe) {
-                    setSchedule(prevSchedule => {
-                      const updatedSchedule = [...prevSchedule];
-                      updatedSchedule.splice(index + 1, 0, {
-                      id: `suggestion-${index}`,
-                      className: `Food: ${suggestedRecipe}`,
-                      day: class_.day,
-                      startTime: class_.endTime,
-                      endTime: nextClass.startTime,
-                      });
-                      return updatedSchedule;
-                    });
-                    }
-                  }).catch(error => {
-                    console.error("Error fetching recipe recommendation:", error);
-                  });
+                  try {
+                    const daySchedule = schedule.filter((class_) => class_.day === day);
+                    const response = await model.generateContent(
+                      `Based on the following schedule for ${day}: ${daySchedule.map(class_ => `${class_.className} from ${class_.startTime} to ${class_.endTime}`).join(', ')}, suggest 4 meal times and meals that can be prepared using some of these available food items: ${foodItems.map(item => item.name).join(', ')}.
+                      within that time, make sure not to class the food time with any class or activity time 
+                      Please format the suggestions in HTML bullet points. if my schedule is empty or seems i am free, add some sugegstion, also don't generate any extra information, just give me the suggested recipe.`
+                    );
+                    const suggestedText = response.response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(suggestedText, 'text/html');
+                    setSuggestedRecipe(doc.body.textContent || "");
+                  } catch (error) {
+                    console.error("Error fetching meal suggestions:", error);
                   }
-                }
-                return null;
-                })}
-              <Dialog>
+                }}
+                className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+              >
+                Meal Suggestions
+              </Button>
+          <div className="grid gap-4">
+            {schedule
+              .filter((class_) => class_.day === day)
+              .map((class_) => (
+            <div
+              key={class_.id}
+              className="flex flex-col sm:flex-row items-center justify-between rounded-lg border border-gray-300 dark:border-gray-700 p-4"
+            >
+              <div className="text-center sm:text-left mb-2 sm:mb-0">
+                <div className="font-semibold text-black dark:text-white">
+              {class_.className}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+              {class_.startTime} - {class_.endTime}
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleDeleteClass(class_.id)}
+                className="text-gray-600 dark:text-gray-400"
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            </div>
+              ))}
+          </div>
+          <div className="flex flex-col sm:flex-row justify-between space-y-2 sm:space-y-0 sm:space-x-4">
+            <Dialog>
               <DialogTrigger asChild>
-                  <Button variant="outline" className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"><Plus className="mr-2 h-4 w-4" /> Add Class</Button>
-                </DialogTrigger>
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
-                    <DialogContent className="bg-white dark:bg-black text-black dark:text-white">
-                      <DialogHeader>
-                        <DialogTitle>Add New Class</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="class-name" className="text-gray-700 dark:text-gray-300">Class Name</Label>
-                          <Input id="class-name" value={className} onChange={(e) => setClassName(e.target.value)} placeholder="Enter class name" className="bg-white dark:bg-black text-black dark:text-white" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="day" className="text-gray-700 dark:text-gray-300">Day</Label>
-                          <Select onValueChange={(value) => setDay(value)}>
-                            <SelectTrigger className="bg-white dark:bg-black text-black dark:text-white">
-                              <SelectValue placeholder="Select day" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white dark:bg-black text-black dark:text-white">
-                              {dayOrder.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="start-time" className="text-gray-700 dark:text-gray-300">Start Time</Label>
-                          <Input id="start-time" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} placeholder="Enter start time" className="bg-white dark:bg-black text-black dark:text-white" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="end-time" className="text-gray-700 dark:text-gray-300">End Time</Label>
-<<<<<<< HEAD
-                          <Input id="end-time" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} placeholder="Enter end time" className="bg-white dark:bg-black text-black dark:text-white" />
-                        </div>
-                      </div>
-                      <DialogFooter className="flex justify-between space-x-4">
-                        <Button variant="outline" onClick={handleAddClass} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Add Class</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                  <Dialog open={isRecipeDialogOpen} onOpenChange={setIsRecipeDialogOpen}>
-=======
-                            <Input id="end-time" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} placeholder="Enter end time" className="bg-white dark:bg-black text-black dark:text-white" />
-                          </div>
-                          </div>
-                          <DialogFooter className="flex justify-between space-x-4">
-                          <Button variant="outline" onClick={handleAddClass} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Add Class</Button>
-
-                          </DialogFooter>
-                        </DialogContent>
-                        </Dialog>
-                        <Button variant="outline" onClick={() => setIsRecipeDialogOpen(true)} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
-                            Prepare Recipe
-                          </Button>
-                        <Dialog open={isRecipeDialogOpen} onOpenChange={setIsRecipeDialogOpen}>
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
-                    <DialogContent className="bg-white dark:bg-black text-black dark:text-white">
-                      <DialogHeader>
-                        <DialogTitle>Prepare a Recipe</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <Label htmlFor="prep-time" className="text-gray-700 dark:text-gray-300">Available Preparation Time (minutes)</Label>
-                        <Input id="prep-time" type="number" value={availableTime} onChange={(e) => setAvailableTime(e.target.value)} placeholder="Enter time in minutes" className="bg-white dark:bg-black text-black dark:text-white" />
-                      </div>
-                      <DialogFooter>
-<<<<<<< HEAD
-                        <Button variant="outline" onClick={handlePrepareRecipe} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Generate Recipe</Button>
-=======
-                        <Button variant="outline"onClick={handlePrepareRecipe} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Generate Recipe</Button>
-                        
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                  {suggestedRecipe && (
-<<<<<<< HEAD
-                    <Dialog open={true} onOpenChange={() => setSuggestedRecipe("")}>
-                      <DialogContent className="bg-white dark:bg-black text-black dark:text-white max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                          <DialogTitle>Suggested Recipe</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <p>{suggestedRecipe}</p>
-                        </div>
-                        <DialogFooter>
-                          <Button variant="outline" onClick={() => setSuggestedRecipe("")} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Close</Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-=======
-                    <div className="mt-4 text-black dark:text-white">
-                      <h3 className="text-xl font-bold">Suggested Recipe</h3>
-                      <p>{suggestedRecipe}</p>
-                    </div>
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            <Button variant="outline" className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white w-full sm:w-auto">
+              <Plus className="mr-2 h-4 w-4" /> Add Class
+            </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-white dark:bg-black text-black dark:text-white">
+            <DialogHeader>
+              <DialogTitle>Add New Class</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="class-name" className="text-gray-700 dark:text-gray-300">Class Name</Label>
+                <Input id="class-name" value={className} onChange={(e) => setClassName(e.target.value)} placeholder="Enter class name" className="bg-white dark:bg-black text-black dark:text-white" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="day" className="text-gray-700 dark:text-gray-300">Day</Label>
+                <Select onValueChange={(value) => setDay(value)}>
+              <SelectTrigger className="bg-white dark:bg-black text-black dark:text-white">
+                <SelectValue placeholder="Select day" />
+              </SelectTrigger>
+              <SelectContent className="bg-white dark:bg-black text-black dark:text-white">
+                {dayOrder.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+              </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="start-time" className="text-gray-700 dark:text-gray-300">Start Time</Label>
+                <Input id="start-time" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} placeholder="Enter start time" className="bg-white dark:bg-black text-black dark:text-white" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="end-time" className="text-gray-700 dark:text-gray-300">End Time</Label>
+                <Input id="end-time" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} placeholder="Enter end time" className="bg-white dark:bg-black text-black dark:text-white" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={handleAddClass} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Add Class</Button>
+            </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Button variant="outline" onClick={() => setIsRecipeDialogOpen(true)} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white w-full sm:w-auto">
+              Check Food Recipe
+            </Button>
+          </div>
+          <Dialog open={isRecipeDialogOpen} onOpenChange={setIsRecipeDialogOpen}>
+            <DialogContent className="bg-white dark:bg-black text-black dark:text-white">
+              <DialogHeader>
+            <DialogTitle>Prepare a Recipe</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+            <Label htmlFor="prep-time" className="text-gray-700 dark:text-gray-300">Available Preparation Time (minutes)</Label>
+            <Input id="prep-time" type="number" value={availableTime} onChange={(e) => setAvailableTime(e.target.value)} placeholder="Enter time in minutes" className="bg-white dark:bg-black text-black dark:text-white" />
+              </div>
+              <DialogFooter>
+            <Button variant="outline" onClick={handlePrepareRecipe} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Generate Recipe</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          {suggestedRecipe && (
+            <Dialog open={true} onOpenChange={() => setSuggestedRecipe("")}>
+              <DialogContent className="bg-white dark:bg-black text-black dark:text-white max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Suggested Recipe</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p>{suggestedRecipe}</p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setSuggestedRecipe("")} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Close</Button>
+            </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+            </div>
+          </CardContent>
+        </Card>
           </TabsContent>
-            <TabsContent value="recipes" className="space-y-6">
-              <div className="flex items-center justify-between p-4">
-                <h2 className="text-2xl font-bold text-black dark:text-white">Recipe Suggestions</h2>
-                <Button variant="outline" onClick={fetchRecipes} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white p-2">
-                  Generate New Recipes
-                  <RefreshCw className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-              <div className="grid gap-4 md:grid-cols-3">
-                {recipes.map((recipe) => (
-                  <Card key={recipe.id} className="bg-gray-100 dark:bg-gray-800 flex flex-col items-center">
-                    <Image alt={recipe.title} className="aspect-video object-cover w-full h-full" height={200} src={recipe.image} width={200} />
-                    <div className="p-4 w-full flex justify-between items-center">
-<<<<<<< HEAD
-                      <CardTitle className="text-black font-medium dark:text-white">{recipe.title}</CardTitle>
-=======
-                      <CardTitle className="text-black dark:text-white">{recipe.title}</CardTitle>
->>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
-                      <Button variant="outline" onClick={() => handleViewRecipe(recipe.id)} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">View Recipe</Button>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-                {isModalOpen && selectedRecipe && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                  <div className="bg-white p-6 rounded-lg max-w-md mx-auto dark:bg-black dark:text-white overflow-y-auto max-h-full">
-                  <h3 className="text-xl font-bold">{selectedRecipe.title}</h3>
-                  <Image alt={selectedRecipe.title} className="my-4 rounded-md object-cover" height={200} src={selectedRecipe.image} width={200} />
-                    <div dangerouslySetInnerHTML={{ __html: selectedRecipe.instructions }} />
-                  <Button variant="outline" onClick={() => setIsModalOpen(false)} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Close</Button>
-                  </div>
-                </div>
-                )}
-            </TabsContent>
+          <TabsContent value="recipes" className="space-y-6">
+        <div className="flex items-center justify-between p-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-black dark:text-white">Recipe Suggestions</h2>
+          <Button variant="outline" onClick={fetchRecipes} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white p-2">
+            <span className="hidden sm:inline">Generate New Recipes</span>
+            <RefreshCw className="h-4 w-4 sm:ml-2" />
+          </Button>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {recipes.map((recipe) => (
+            <Card key={recipe.id} className="bg-gray-100 dark:bg-gray-800 flex flex-col">
+          <div className="relative pt-[56.25%]">
+            <Image 
+              alt={recipe.title} 
+              src={recipe.image} 
+              layout="fill" 
+              objectFit="cover"
+              className="rounded-t-lg"
+            />
+          </div>
+          <div className="p-4 flex-grow flex flex-col justify-between">
+            <CardTitle className="text-black font-medium dark:text-white text-lg mb-2">{recipe.title}</CardTitle>
+            <Button variant="outline" onClick={() => handleViewRecipe(recipe.id)} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white mt-2">View Recipe</Button>
+          </div>
+            </Card>
+          ))}
+        </div>
+        {isModalOpen && selectedRecipe && (
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent className="bg-white dark:bg-black text-black dark:text-white max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{selectedRecipe.title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="relative pt-[56.25%]">
+              <Image 
+            alt={selectedRecipe.title} 
+            src={selectedRecipe.image} 
+            layout="fill" 
+            objectFit="cover"
+            className="rounded-lg"
+              />
+            </div>
+            <div dangerouslySetInnerHTML={{ __html: selectedRecipe.instructions }} />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Close</Button>
+          </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+          </TabsContent>
         </Tabs>
       </main>
     </div>
