@@ -228,11 +228,11 @@ const Box = ({
   };
 
   const getResponsiveClasses = (
-    prop: any,
+    prop: unknown,
     classMap: Record<string | number, string>
   ) => {
-    if (typeof prop === "object") {
-      return Object.entries(prop)
+    if (typeof prop === "object" && prop !== null) {
+      return Object.entries(prop as Record<string, string | number>)
         .map(([breakpoint, value]) => {
           const prefix = breakpoint === "sm" ? "" : `${breakpoint}:`;
           return `${prefix}${classMap[value as keyof typeof classMap] || ""}`;
