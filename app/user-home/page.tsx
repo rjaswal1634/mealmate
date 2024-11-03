@@ -10,6 +10,11 @@ import { ModeToggle } from "@/components/ui/modetoggle";
 import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
 import axios from "axios";
 import logo from "/public/logo.svg";
+<<<<<<< HEAD
+const GEMINI_KEY = process.env.NEXT_PUBLIC_GEMINI_KEY;
+const SPOON_KEY = process.env.NEXT_PUBLIC_SPOON_KEY;
+=======
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
 import {
   Card,
   CardContent,
@@ -88,7 +93,11 @@ export default function SmartFridgeDashboard() {
   const [availableTime, setAvailableTime] = React.useState("");
   const [suggestedRecipe, setSuggestedRecipe] = React.useState("");
 
+<<<<<<< HEAD
+  const dayOrder = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+=======
   const dayOrder = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
 
   React.useEffect(() => {
     const aiResponsesRef = ref(database, "ai_responses");
@@ -152,7 +161,11 @@ export default function SmartFridgeDashboard() {
   };
 
   const fetchRecipes = async () => {
+<<<<<<< HEAD
+    const apiKey = SPOON_KEY;
+=======
     const apiKey = '49ced12e95f64e30a325e3d257ab010e';
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
     const ingredients = foodItems.map((item) => item.name).join(',');
     try {
       const response = await axios.get(`https://api.spoonacular.com/recipes/findByIngredients`, {
@@ -170,7 +183,11 @@ export default function SmartFridgeDashboard() {
   };
 
   const handleViewRecipe = async (recipeId: number) => {
+<<<<<<< HEAD
+    const apiKey = SPOON_KEY;
+=======
     const apiKey = '6311ae6ba06349b9b24ebc42b19fb517';
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
     try {
       const response = await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/information`, {
         params: { includeNutrition: false, apiKey },
@@ -182,7 +199,14 @@ export default function SmartFridgeDashboard() {
         image: data.image,
         instructions: data.instructions,
       });
+<<<<<<< HEAD
+      if (!GEMINI_KEY) {
+        throw new Error("GEMINI_KEY is not defined");
+      }
+      const genAI = new GoogleGenerativeAI(GEMINI_KEY);
+=======
       const genAI = new GoogleGenerativeAI('AIzaSyBCag4JyNXDZDsZhUdltv-ftc-0Jfcy7GM');
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const parsedInstructions = await model.generateContent(
         `Please itemize the following instructions using proper step numbers and also proper html tag so that it align nicely 
@@ -203,7 +227,14 @@ export default function SmartFridgeDashboard() {
   };
 
   const handlePrepareRecipe = async () => {
+<<<<<<< HEAD
+    if (!GEMINI_KEY) {
+        throw new Error("GEMINI_KEY is not defined");
+      }
+    const genAI = new GoogleGenerativeAI(GEMINI_KEY);
+=======
     const genAI = new GoogleGenerativeAI('AIzaSyBCag4JyNXDZDsZhUdltv-ftc-0Jfcy7GM');
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     try {
       const response = await model.generateContent(
@@ -279,6 +310,12 @@ export default function SmartFridgeDashboard() {
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
+<<<<<<< HEAD
+                <th scope="col" className="px-6 py-3 text-left text-xs  font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Item Number</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs  font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Item Name</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs  font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs  font-bold text-gray-900 dark:text-gray-300 uppercase tracking-wider">Calories</th>
+=======
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Item Number</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Item Name</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
@@ -286,11 +323,18 @@ export default function SmartFridgeDashboard() {
                 <th scope="col" className="relative px-6 py-3">
                 <span className="sr-only">Delete</span>
                 </th>
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
               </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
               {foodItems.map((item, index) => (
                 <tr key={index}>
+<<<<<<< HEAD
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{index + 1}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{item.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{item.quantity}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-500 dark:text-gray-300">{item.calorie}</td>
+=======
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{index + 1}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{item.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{item.quantity}</td>
@@ -298,6 +342,7 @@ export default function SmartFridgeDashboard() {
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <Button onClick={() => handleFoodDelete(item.name)} variant="destructive" className="text-gray-600 dark:text-gray-400">Delete</Button>
                 </td>
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
                 </tr>
               ))}
               </tbody>
@@ -307,6 +352,67 @@ export default function SmartFridgeDashboard() {
             <Card className="bg-gray-100 dark:bg-gray-800 mx-auto" style={{ maxWidth: "75%" }}>
               <CardHeader>
               <CardTitle className="text-black dark:text-white">Schedules</CardTitle>
+<<<<<<< HEAD
+              <CardDescription className="text-gray-600 dark:text-gray-400">Edit Your Schedules</CardDescription>
+                </CardHeader>
+                <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-center space-x-4 mb-4">
+                    {dayOrder.map((d) => (
+                        <Button
+                        key={d}
+                        variant={day === d ? "default" : "outline"}
+                        onClick={() => setDay(d)}
+                        className={`text-gray-700 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-500 ${day === d ? "bg-gray-300 dark:bg-gray-700" : ""}`}
+                        >
+                        {d}
+                        </Button>
+                    ))}
+                  </div>
+                  <div className="grid gap-4">
+                    {schedule
+                      .filter((class_) => class_.day === day)
+                      .map((class_) => (
+                        <div
+                          key={class_.id}
+                          className="flex items-center justify-between rounded-lg border border-gray-300 dark:border-gray-700 p-4"
+                        >
+                          <div className="flex-1 text-left">
+                            <div className="font-semibold text-black dark:text-white">
+                              {class_.className}
+                            </div>
+                          </div>
+                          <div className="flex-1 text-left">
+                            <div className="text-gray-600 dark:text-gray-400">{class_.day}</div>
+                          </div>
+                          <div className="flex-1 text-left">
+                            <div className="text-gray-600 dark:text-gray-400">
+                              {class_.startTime} - {class_.endTime}
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteClass(class_.id)}
+                            className="text-gray-600 dark:text-gray-400"
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                  </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <div className="flex justify-between space-x-4">
+                        <Button variant="outline" className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+                          <Plus className="mr-2 h-4 w-4" /> Add Class
+                        </Button>
+                      </div>
+                    </DialogTrigger>
+                    <Button variant="outline" onClick={() => setIsRecipeDialogOpen(true)} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+                      Check the Food Recipe Here
+                    </Button>
+=======
               <CardDescription className="text-gray-600 dark:text-gray-400">Manage your class schedule</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -401,6 +507,7 @@ export default function SmartFridgeDashboard() {
               <DialogTrigger asChild>
                   <Button variant="outline" className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"><Plus className="mr-2 h-4 w-4" /> Add Class</Button>
                 </DialogTrigger>
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
                     <DialogContent className="bg-white dark:bg-black text-black dark:text-white">
                       <DialogHeader>
                         <DialogTitle>Add New Class</DialogTitle>
@@ -427,6 +534,17 @@ export default function SmartFridgeDashboard() {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="end-time" className="text-gray-700 dark:text-gray-300">End Time</Label>
+<<<<<<< HEAD
+                          <Input id="end-time" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} placeholder="Enter end time" className="bg-white dark:bg-black text-black dark:text-white" />
+                        </div>
+                      </div>
+                      <DialogFooter className="flex justify-between space-x-4">
+                        <Button variant="outline" onClick={handleAddClass} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Add Class</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  <Dialog open={isRecipeDialogOpen} onOpenChange={setIsRecipeDialogOpen}>
+=======
                             <Input id="end-time" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} placeholder="Enter end time" className="bg-white dark:bg-black text-black dark:text-white" />
                           </div>
                           </div>
@@ -440,6 +558,7 @@ export default function SmartFridgeDashboard() {
                             Prepare Recipe
                           </Button>
                         <Dialog open={isRecipeDialogOpen} onOpenChange={setIsRecipeDialogOpen}>
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
                     <DialogContent className="bg-white dark:bg-black text-black dark:text-white">
                       <DialogHeader>
                         <DialogTitle>Prepare a Recipe</DialogTitle>
@@ -449,16 +568,36 @@ export default function SmartFridgeDashboard() {
                         <Input id="prep-time" type="number" value={availableTime} onChange={(e) => setAvailableTime(e.target.value)} placeholder="Enter time in minutes" className="bg-white dark:bg-black text-black dark:text-white" />
                       </div>
                       <DialogFooter>
+<<<<<<< HEAD
+                        <Button variant="outline" onClick={handlePrepareRecipe} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Generate Recipe</Button>
+=======
                         <Button variant="outline"onClick={handlePrepareRecipe} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Generate Recipe</Button>
                         
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
                   {suggestedRecipe && (
+<<<<<<< HEAD
+                    <Dialog open={true} onOpenChange={() => setSuggestedRecipe("")}>
+                      <DialogContent className="bg-white dark:bg-black text-black dark:text-white max-h-[80vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>Suggested Recipe</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <p>{suggestedRecipe}</p>
+                        </div>
+                        <DialogFooter>
+                          <Button variant="outline" onClick={() => setSuggestedRecipe("")} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Close</Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+=======
                     <div className="mt-4 text-black dark:text-white">
                       <h3 className="text-xl font-bold">Suggested Recipe</h3>
                       <p>{suggestedRecipe}</p>
                     </div>
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
                   )}
                 </div>
               </CardContent>
@@ -477,7 +616,11 @@ export default function SmartFridgeDashboard() {
                   <Card key={recipe.id} className="bg-gray-100 dark:bg-gray-800 flex flex-col items-center">
                     <Image alt={recipe.title} className="aspect-video object-cover w-full h-full" height={200} src={recipe.image} width={200} />
                     <div className="p-4 w-full flex justify-between items-center">
+<<<<<<< HEAD
+                      <CardTitle className="text-black font-medium dark:text-white">{recipe.title}</CardTitle>
+=======
                       <CardTitle className="text-black dark:text-white">{recipe.title}</CardTitle>
+>>>>>>> 8f07f48043f46a986078e04a03d98704423c53fc
                       <Button variant="outline" onClick={() => handleViewRecipe(recipe.id)} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">View Recipe</Button>
                     </div>
                   </Card>
