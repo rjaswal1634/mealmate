@@ -1,6 +1,6 @@
 "use client"
 import { cn } from "@/lib/utils"
-import { BookOpen, MenuIcon } from 'lucide-react'
+ import { MenuIcon } from 'lucide-react'
 import Link from "next/link"
 import * as React from "react"
 import { Dialog, DialogClose } from "./ui/dialog"
@@ -8,7 +8,7 @@ import { Button } from "./ui/button"
 import { NavigationMenu, NavigationMenuLink, NavigationMenuList } from "./ui/navigation-menu"
 // import ModeToggle from "../mode-toggle"
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet"
-import ModeToggle from "./mode-toggle"
+import {ModeToggle} from "@/components/ui/modetoggle"
 
 
 export function NavBar() {
